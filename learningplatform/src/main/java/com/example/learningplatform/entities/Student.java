@@ -1,5 +1,6 @@
 package com.example.learningplatform.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 public class Student{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int studentId;
+    private int studentId;
     @Column(nullable = false ,unique = true)
     private String email;
     @Column(nullable = false)
@@ -58,6 +59,7 @@ public class Student{
     private List<Course> courses;
 
     @OneToMany(mappedBy = "student")
+    @JsonManagedReference
     private List<Enrollment> enrollments;
 
     @ManyToMany
@@ -81,6 +83,7 @@ public class Student{
     }
 
     public List<Enrollment> getEnrollments() {
+
         return enrollments;
     }
 
@@ -94,5 +97,14 @@ public class Student{
 
     public void setAdmins(List<Admin> admins) {
         this.admins = admins;
+    }
+
+    public UserDTO studentToDTO(){
+        UserDTO dto=new UserDTO();
+        dto.setUserId(studentId);
+        dto.setEmail(email);
+        dto.setFirstName(firstName);
+        dto.setLastName(lastName);
+        return dto;
     }
 }

@@ -28,6 +28,10 @@ public class PendingCourse{
     @ManyToMany
     private List<Admin> admins;
 
+    public PendingCourse(){
+
+    }
+
     public PendingCourse(int pendingCourseId, String title, String description, String category, Boolean paid, ArrayList<String> tags, Instructor instructor, List<Admin> admins) {
         this.pendingCourseId = pendingCourseId;
         this.title = title;
@@ -103,7 +107,16 @@ public class PendingCourse{
     public void setAdmins(List<Admin> admins) {
         this.admins = admins;
     }
-
+    public CourseDTO pendingCourseToDTO(){
+        CourseDTO dto=new CourseDTO();
+        dto.setCourseId(pendingCourseId);
+        dto.setTitle(title);
+        dto.setDescription(description);
+        dto.setCategory(category);
+        dto.setPaid(paid);
+        dto.setTags(tags);
+        return dto;
+    }
 
     @Override
     public String toString() {

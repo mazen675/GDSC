@@ -1,12 +1,9 @@
 package com.example.learningplatform.controllers;
 
-import com.example.learningplatform.entities.Admin;
-import com.example.learningplatform.entities.Instructor;
-import com.example.learningplatform.entities.Student;
+import com.example.learningplatform.entities.*;
 import com.example.learningplatform.services.AdminService;
 import com.example.learningplatform.services.InstructorService;
 import com.example.learningplatform.services.StudentService;
-import com.example.learningplatform.entities.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,16 +44,15 @@ public class HomeController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody Student student, @RequestParam String type) {
+    public ResponseEntity<String> signUp(@RequestBody UserDTO userDTO, @RequestParam String type) {
         if (type.equals("Admin")) {
-            //Admin admin = new Admin();
-            // Copy fields from student to admin or populate admin appropriately
-            //adminService.addOrUpdateAdmin(admin);
+            Admin admin=userDTO.toAdmin();
+            adminService.addOrUpdateAdmin(admin);
         } else if (type.equals("Instructor")) {
-            //Instructor instructor = new Instructor();
-            // Copy fields from student to instructor or populate instructor appropriately
-            //instructorService.addOrUpdateInstructor(instructor);
+            Instructor instructor=userDTO.toInstructor();
+            instructorService.addOrUpdateInstructor(instructor);
         } else if (type.equals("Student")) {
+            Student student=userDTO.toStudent();
             studentService.addOrUpdateStudent(student);
         }
         return ResponseEntity.ok("Signup successful");

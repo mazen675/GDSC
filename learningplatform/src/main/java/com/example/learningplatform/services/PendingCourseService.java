@@ -14,19 +14,19 @@ public class PendingCourseService {
     private PendingCourseRepository pendingCourseRepo;
 
 
-    List<PendingCourse> getPendingCourses(){
+    public List<PendingCourse> getPendingCourses(){
         return pendingCourseRepo.findAll();
     }
 
-    Optional<PendingCourse> getPendingCourseById(int Id){
+    public Optional<PendingCourse> getPendingCourseById(int Id){
         return pendingCourseRepo.findById(Id);
     }
 
-    void addPendingCourse(PendingCourse pendingCourse){
+    public void addPendingCourse(PendingCourse pendingCourse){
         pendingCourseRepo.save(pendingCourse);
     }
 
-    void deletePendingCourseById(int Id){
+    public void deletePendingCourseById(int Id){
         pendingCourseRepo.deleteById(Id);
     }
 

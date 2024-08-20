@@ -1,8 +1,7 @@
 package com.example.learningplatform.services;
 
-import com.example.learningplatform.entities.Admin;
-import com.example.learningplatform.entities.Course;
-import com.example.learningplatform.entities.PendingCourse;
+import com.example.learningplatform.entities.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.learningplatform.repositories.AdminRepository;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,9 @@ public class AdminService {
     private PendingCourseService pendingCourseService;
     @Autowired
     private CourseService courseService;
+
+    @Autowired
+    private StudentService studentService;
 
     public List<Admin> getAdmins(){
         return adminRepo.findAll();
@@ -36,6 +38,8 @@ public class AdminService {
     public void deleteAdmin(int id){
         adminRepo.deleteById(id);
     }
+
+    @Transactional
     public void acceptCourseRequest(int pendingCourseId){
         PendingCourse pendingCourse=pendingCourseService.getPendingCourseById(pendingCourseId)
                 .orElseThrow(() -> new RuntimeException("Course not found with id " + pendingCourseId));
@@ -48,9 +52,21 @@ public class AdminService {
         course.setTags(pendingCourse.getTags());
         course.setInstructor(pendingCourse.getInstructor());
         course.setAdmins(pendingCourse.getAdmins());
-
+        Instructor instructor = pendingCourse.getInstructor();
+        instructor.getCourses().add(course);
         courseService.addOrUpdateCourse(course);
         pendingCourseService.deletePendingCourseById(pendingCourseId);
+    }
+
+    @Transactional
+    public void deleteReview(int studentId,int courseId){
+        for (Enrollment i : courseService.getCourseEnrollments(courseId)){
+            for (Enrollment j: studentService.getEnrollmentsForStudent(studentId)){
+                if(i==j){
+                   i.setReview(null);
+                }
+            }
+        }
     }
 
 }

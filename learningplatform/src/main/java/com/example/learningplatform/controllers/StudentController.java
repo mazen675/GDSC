@@ -1,13 +1,16 @@
 package com.example.learningplatform.controllers;
 
 import com.example.learningplatform.entities.Course;
+import com.example.learningplatform.entities.CourseDTO;
 import com.example.learningplatform.entities.Student;
+import com.example.learningplatform.entities.UserDTO;
 import com.example.learningplatform.services.CourseService;
 import com.example.learningplatform.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,21 +25,32 @@ public class StudentController {
     private StudentService studentService;
 
     @GetMapping("/details")
-    public ResponseEntity<Student> getStudentDetails(@RequestParam int id) {
-        Optional<Student> student = studentService.getStudentById(id);
-        return student.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<UserDTO> getStudentDetails(@RequestParam int id) {
+        Optional<Student> studentOptional = studentService.getStudentById(id);
+
+        if (studentOptional.isPresent()) {
+            Student student = studentOptional.get();
+            UserDTO userDTO = student.studentToDTO(); // Ensure `studentToDTO` is a method that converts Student to UserDTO
+            return ResponseEntity.ok(userDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping("/enrolled")
-    public ResponseEntity<List<Course>> getEnrolledCourses(@RequestParam int studentId) {
-        List<Course> courses = studentService.getCoursesForStudent(studentId);
+    @GetMapping("/enrolled-courses")
+    public ResponseEntity<List<CourseDTO>> getEnrolledCourses(@RequestParam int studentId) {
+        List<CourseDTO> courses =new ArrayList<>();
+        for(Course i : studentService.getCoursesForStudent(studentId))
+            courses.add(i.courseToDTO());
         return ResponseEntity.ok(courses);
     }
 
     @GetMapping("/browse")
-    public ResponseEntity<List<Course>> browseCourses() {
-        List<Course> courses = courseService.getCourses();
+    public ResponseEntity<List<CourseDTO>> browseCourses() {
+        List<CourseDTO> courses =new ArrayList<>();
+        for(Course i : courseService.getCourses())
+            courses.add(i.courseToDTO());
+
         return ResponseEntity.ok(courses);
     }
 

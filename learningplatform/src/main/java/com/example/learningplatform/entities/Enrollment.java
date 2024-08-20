@@ -1,9 +1,9 @@
 package com.example.learningplatform.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
-
 public class Enrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,10 +11,12 @@ public class Enrollment {
     private Double progress;
     private String review;
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "studentId")
     private Student student;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "courseId")
     private Course course;
 

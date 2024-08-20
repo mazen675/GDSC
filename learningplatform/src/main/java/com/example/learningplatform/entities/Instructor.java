@@ -8,7 +8,6 @@ public class Instructor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int instructorId;
-
     @Column(nullable = false ,unique = true)
     private String email;
     @Column(nullable = false)
@@ -97,6 +96,15 @@ public class Instructor {
 
     public void setAdmins(List<Admin> admins) {
         this.admins = admins;
+    }
+
+    public UserDTO instructorToDTO(){
+        UserDTO dto=new UserDTO();
+        dto.setUserId(instructorId);
+        dto.setEmail(email);
+        dto.setFirstName(firstName);
+        dto.setLastName(lastName);
+        return dto;
     }
 
     @Override

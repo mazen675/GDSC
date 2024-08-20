@@ -7,7 +7,7 @@ import java.util.List;
 public class Admin{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int adminId;
+    private int adminId;
     @Column(nullable = false ,unique = true)
     private String email;
     @Column(nullable = false)
@@ -112,5 +112,14 @@ public class Admin{
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    public UserDTO adminToDTO(){
+        UserDTO dto=new UserDTO();
+        dto.setUserId(adminId);
+        dto.setEmail(email);
+        dto.setFirstName(firstName);
+        dto.setLastName(lastName);
+        return dto;
     }
 }

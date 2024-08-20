@@ -1,5 +1,6 @@
 package com.example.learningplatform.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class Course {
     private Instructor instructor;
 
     @OneToMany(mappedBy = "course")
+    @JsonManagedReference
     private List<Enrollment> enrollments;
     @ManyToMany
     private List<Admin> admins;
@@ -132,6 +134,17 @@ public class Course {
         this.admins = admins;
     }
 
+    public CourseDTO courseToDTO(){
+        CourseDTO dto=new CourseDTO();
+        dto.setCourseId(courseId);
+        dto.setTitle(title);
+        dto.setDescription(description);
+        dto.setCategory(category);
+        dto.setPaid(paid);
+        dto.setTags(tags);
+        return dto;
+    }
+
     @Override
     public String toString() {
         return "Course{" +
@@ -141,10 +154,6 @@ public class Course {
                 ", category='" + category + '\'' +
                 ", paid=" + paid +
                 ", tags=" + tags +
-                ", Students=" + Students +
-                ", instructor=" + instructor +
-                ", enrollments=" + enrollments +
-                ", admins=" + admins +
                 '}';
     }
 }
