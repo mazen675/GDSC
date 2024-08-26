@@ -30,7 +30,7 @@ public class StudentController {
 
         if (studentOptional.isPresent()) {
             Student student = studentOptional.get();
-            UserDTO userDTO = student.studentToDTO(); // Ensure `studentToDTO` is a method that converts Student to UserDTO
+            UserDTO userDTO = student.userToDTO();
             return ResponseEntity.ok(userDTO);
         } else {
             return ResponseEntity.notFound().build();

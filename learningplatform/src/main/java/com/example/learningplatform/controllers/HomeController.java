@@ -4,6 +4,7 @@ import com.example.learningplatform.entities.*;
 import com.example.learningplatform.services.AdminService;
 import com.example.learningplatform.services.InstructorService;
 import com.example.learningplatform.services.StudentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class HomeController {
     private StudentService studentService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest) {
         String type = loginRequest.getType();
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
@@ -44,16 +45,20 @@ public class HomeController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody UserDTO userDTO, @RequestParam String type) {
-        if (type.equals("Admin")) {
-            Admin admin=userDTO.toAdmin();
-            adminService.addOrUpdateAdmin(admin);
-        } else if (type.equals("Instructor")) {
-            Instructor instructor=userDTO.toInstructor();
-            instructorService.addOrUpdateInstructor(instructor);
-        } else if (type.equals("Student")) {
-            Student student=userDTO.toStudent();
-            studentService.addOrUpdateStudent(student);
+    public ResponseEntity<String> signUp(@Valid @RequestBody SignUpDTO signUpDTO, @RequestParam String type) {
+        switch (type) {
+            case "Admin" -> {
+                Admin admin = signUpDTO.toAdmin();
+                adminService.addOrUpdateAdmin(admin);
+            }
+            case "Instructor" -> {
+                Instructor instructor = signUpDTO.toInstructor();
+                instructorService.addOrUpdateInstructor(instructor);
+            }
+            case "Student" -> {
+                Student student = signUpDTO.toStudent();
+                studentService.addOrUpdateStudent(student);
+            }
         }
         return ResponseEntity.ok("Signup successful");
     }

@@ -3,6 +3,7 @@ package com.example.learningplatform.controllers;
 import com.example.learningplatform.entities.*;
 import com.example.learningplatform.services.CourseService;
 import com.example.learningplatform.services.InstructorService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,14 +25,15 @@ public class InstructorController {
         Optional<Instructor> instructorOptional = instructorService.getInstructorById(id);
         if (instructorOptional.isPresent()) {
             Instructor instructor = instructorOptional.get();
-            UserDTO userDTO = instructor.instructorToDTO(); // Ensure `studentToDTO` is a method that converts Student to UserDTO
+            UserDTO userDTO = instructor.userToDTO();
             return ResponseEntity.ok(userDTO);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
     @PostMapping("/add-course")
-    public ResponseEntity<Void> addCourse(@RequestBody PendingCourse pendingCourse,@RequestParam int instructorId) {
+    public ResponseEntity<Void> addCourse(@Valid @RequestBody CourseDTO courseDTO, @RequestParam int instructorId) {
+        PendingCourse pendingCourse=courseDTO.toCourse();
         instructorService.sendCourseRequest(pendingCourse,instructorId);
         return ResponseEntity.ok().build();
     }
@@ -53,7 +55,7 @@ public class InstructorController {
     public ResponseEntity<List<UserDTO>> showEnrollmentsForCourse(@RequestParam int courseId) {
         List<UserDTO> enrollments =new ArrayList<>();
         for(Student i :courseService.getCourseStudents(courseId)){
-            enrollments.add(i.studentToDTO());
+            enrollments.add(i.userToDTO());
         }
         return ResponseEntity.ok(enrollments);
     }

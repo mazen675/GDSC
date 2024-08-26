@@ -50,7 +50,7 @@ public class InstructorService {
                 .orElseThrow(() -> new RuntimeException("Instructor not found with id " + instructorId));
         Course course=courseService.getCourseById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found with id " + courseId));
-        if(course.getInstructor().getInstructorId()==instructorId)
+        if(course.getInstructor().getUserId()==instructorId)
             courseService.deleteCourseById(courseId);
     }
     public List<Course> getCourses(int instructorId){

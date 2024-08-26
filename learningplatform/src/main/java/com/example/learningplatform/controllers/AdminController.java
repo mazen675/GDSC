@@ -24,23 +24,24 @@ public class AdminController {
     @Autowired
     private PendingCourseService pendingCourseService;
     @GetMapping("/details")
-    public ResponseEntity<Admin> getAdminDetails(@RequestParam int id) {
-        Optional<Admin> admin = adminService.getAdminById(id);
-        return admin.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
+    public ResponseEntity<UserDTO> getAdminDetails(@RequestParam int id) {
+        Optional<Admin> adminOptional = adminService.getAdminById(id);
+            Admin admin = adminOptional.get();
+            UserDTO userDTO = admin.userToDTO(); // Convert Admin to UserDTO
+            return ResponseEntity.ok(userDTO);
+        }
     @GetMapping("/show-students")
     public ResponseEntity<List<UserDTO>> getStudents() {
         List<UserDTO> students=new ArrayList<>();
         for(Student i :studentService.getStudents() )
-               students.add(i.studentToDTO());
+               students.add(i.userToDTO());
         return ResponseEntity.ok(students);
     }
     @GetMapping("/show-instructors")
     public ResponseEntity<List<UserDTO>> getInstructors() {
         List<UserDTO> instructors=new ArrayList<>();
         for(Instructor i :instructorService.getInstructors() )
-            instructors.add(i.instructorToDTO());
+            instructors.add(i.userToDTO());
         return ResponseEntity.ok(instructors);
     }
     @GetMapping("/show-courses")
@@ -67,7 +68,7 @@ public class AdminController {
     public ResponseEntity<List<UserDTO>> getAdmins() {
         List<UserDTO> admins=new ArrayList<>();
         for(Admin i :adminService.getAdmins() )
-            admins.add(i.adminToDTO());
+            admins.add(i.userToDTO());
         return ResponseEntity.ok(admins);
     }
 
